@@ -58,7 +58,10 @@ const form = document.getElementById("url-check");
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const value = document.getElementById("url").value.trim();
-
+  if (!value.includes("images.coach.com")) {
+    document.getElementById("url").value = "";
+    return alert("URL does not contain images.coach.com");
+  }
   let split = value.substring(40).split("?");
 
   imgCode = split[0];
