@@ -85,10 +85,13 @@ function writeHTML(clone, preset, img, json, url) {
   a.target = "_blank";
 
   const sizeChange = clone.querySelector(".size-change");
-  sizeChange.textContent = `${calcDiff(
-    json.originalSize,
-    json.contentLength
-  )} in size vs original image`;
+  sizeChange.textContent =
+    json.server === "Akamai Image Manager"
+      ? `${calcDiff(
+          json.originalSize,
+          json.contentLength
+        )} in size vs original image`
+      : "Realtime Optimization - more data will be available after offline optimization";
 
   // <p class="staging"></p>
   // <p class="server"></p>
