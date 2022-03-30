@@ -9,9 +9,13 @@ const handler = async (event) => {
       headers: {
         "x-im-piez": "on",
         "x-akamai-ro-piez": "on",
+        "user-agent": json.ua,
       },
     });
 
+    console.log(...response.headers);
+    const ua = response.headers.get("user-agent");
+    console.log(ua);
     const staging = response.headers.get("x-akamai-staging") || false;
     const fileName = response.headers.get("x-im-file-name");
     const originalFormat = response.headers.get("x-im-original-format");
@@ -22,6 +26,7 @@ const handler = async (event) => {
     const contentType = response.headers.get("content-type");
     const contentLength = response.headers.get("content-length");
     const server = response.headers.get("server");
+    const encodingQuality = response.headers.get("x-im-encoding-quality");
 
     const data = {
       staging,
@@ -34,6 +39,7 @@ const handler = async (event) => {
       pixelDensity,
       contentType,
       contentLength,
+      encodingQuality,
     };
 
     console.log(data);

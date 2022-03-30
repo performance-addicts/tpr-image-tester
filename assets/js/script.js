@@ -22,31 +22,6 @@ const presets = [
   "",
 ];
 
-async function checkForAkamaiStaging(url) {
-  const request = new Request(url);
-  // request.headers.append("Pragma", "x-im-piez");
-  // request.headers.append("Access-Control-Allow-Origin", "*");
-  // request.headers.append(
-  //   "Access-Control-Allow-Methods",
-  //   "DELETE, POST, GET, OPTIONS"
-  // );
-  // request.headers.append(
-  //   "Access-Control-Allow-Headers",
-  //   "Content-Type, Authorization, X-Requested-With"
-  // );
-
-  const response = await fetch(request, {
-    headers: {
-      "x-im-piez": "on",
-      "x-akamai-ro-piez": "on",
-      Pragma:
-        "akamai-x-cache-on, akamai-x-cache-remote-on, akamai-x-check-cacheable, akamai-x-get-cache-key, akamai-x-get-extracted-values, akamai-x-get-true-cache-key, akamai-x-serial-no, akamai-x-get-request-id, akamai-x-get-client-ip, x-akamai-cpi-trace, x-akamai-a2-trace,akamai-x-im-trace, akamai-x-feo-trace,akamai-x-tapioca-trace,x-akamai-a2-trace,akamai-x-ro-trace, akamai-x-get-brotli-status, akamai-x-im-trace",
-    },
-  });
-
-  console.log(response.headers.get("x-akamai-staging"));
-}
-
 async function createAllImgs(presets) {
   for (const preset of presets) {
     const img = new Image();
@@ -56,33 +31,25 @@ async function createAllImgs(presets) {
     img.src = url;
     const template = document.querySelector("#product");
     console.log(url);
+    const ua = navigator.userAgent;
     const response = await fetch("/.netlify/functions/images/images", {
       method: "POST",
-      body: JSON.stringify({ url: url }),
+      body: JSON.stringify({ url: url, ua: ua }),
       headers: {
         "Content-Type": "application/json",
       },
     });
 
     const json = await response.json();
-    console.log(json);
-
-    let fileImg = await fetch(img.src);
-
-    fileImg = await fileImg.blob();
-
-    console.log(fileImg);
-    console.log(img.width, img.height);
 
     const clone = template.content.cloneNode(true);
-    writeHTML(clone, fileImg, preset, img, json, url);
+    writeHTML(clone, preset, img, json, url);
   }
 }
 
 (async () => {
   await createAllImgs(presets);
 })();
-// checkForAkamaiStaging(`https://images.coach.com/is/image/Coach/${imgCode}`);
 
 const form = document.getElementById("url-check");
 
@@ -98,24 +65,30 @@ form.addEventListener("submit", async (e) => {
   imgCode = split[0];
   document.getElementById("root").innerHTML = "";
   await createAllImgs(presets);
-  // await checkForAkamaiStaging(
-  //   `https://images.coach.com/is/image/Coach/${imgCode}`
-  // );
 });
 
-function writeHTML(clone, fileImg, preset, img, json, url) {
+function writeHTML(clone, preset, img, json, url) {
   const h2 = clone.querySelector("h2");
 
   h2.textContent = preset || "No Preset";
   const type = clone.querySelector(".type");
-  type.textContent = fileImg.type;
+  type.textContent = json.contentType;
   const size = clone.querySelector(".size");
-  size.textContent = `${(fileImg.size / Math.pow(1024, 1)).toFixed(2)} kb`;
+  size.textContent = `${(
+    parseInt(json.contentLength) / Math.pow(1024, 1)
+  ).toFixed(2)} kb`;
   const dimensions = clone.querySelector(".dimensions");
   dimensions.textContent = `width: ${img.width} height: ${img.height}`;
   const a = clone.querySelector("a");
   a.href = url;
   a.textContent = url;
+  a.target = "_blank";
+
+  const sizeChange = clone.querySelector(".size-change");
+  sizeChange.textContent = `${calcDiff(
+    json.originalSize,
+    json.contentLength
+  )} in size vs original image`;
 
   // <p class="staging"></p>
   // <p class="server"></p>
@@ -125,12 +98,19 @@ function writeHTML(clone, fileImg, preset, img, json, url) {
   // <p class="og-size"></p>
   // <p class="og-width"></p>
   // <p class="result-width"></p>
+  console.log(json.originalSize, json.contentLength);
+  console.log(json.originalSize - json.contentLength);
+
+  console.log(calcDiff(json.originalSize, json.contentLength));
+
   const staging = clone.querySelector(".staging");
   staging.textContent = `Staging: ${json.staging}`;
   const server = clone.querySelector(".server");
   server.textContent = `Server: ${json.server}`;
   const fileName = clone.querySelector(".filename");
   fileName.textContent = `fileName: ${json.fileName}`;
+  const encodingQuality = clone.querySelector(".encoding-quality");
+  encodingQuality.textContent = `encodingQuality: ${json.encodingQuality}`;
   const originalFormat = clone.querySelector(".og-format");
   originalFormat.textContent = `originalFormat: ${json.originalFormat}`;
   const originalSize = clone.querySelector(".og-size");
@@ -142,4 +122,21 @@ function writeHTML(clone, fileImg, preset, img, json, url) {
   const div = clone.querySelector(".img-wrap");
   div.appendChild(img);
   document.querySelector("#root").appendChild(clone);
+}
+
+function calcDiff(before, after) {
+  before = parseInt(before);
+  after = parseInt(after);
+  if (before > after) {
+    const diff = before - after;
+    console.log(diff);
+    const decimal = (diff / before).toFixed(4);
+    console.log(decimal);
+    return `${(decimal * 100).toFixed(2)}% decrease`;
+  }
+
+  const diff = before - after;
+  const decimal = (diff / before).toFixed(2);
+
+  return `${(decimal * 100).toFixed(2)}% increase`;
 }
