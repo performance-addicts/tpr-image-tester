@@ -20,7 +20,7 @@ app.post("/api/url", async (req, res) => {
   });
   res.header({ "Access-Control-Expose-Headers": "*" });
   console.log(response.headers);
-  const staging = response.headers.get("x-akamai-staging");
+  const staging = response.headers.get("x-akamai-staging") || false;
   const fileName = response.headers.get("x-im-file-name");
   const originalFormat = response.headers.get("x-im-original-format");
   const originalSize = response.headers.get("x-im-original-size");

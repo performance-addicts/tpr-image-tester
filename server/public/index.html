@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <!-- <link rel="stylesheet" href="./assets/css/style.css" /> -->
+    <style>
+      .form-example {
+        margin: 5px;
+      }
+
+      img {
+        margin-top: 20px;
+      }
+
+      details {
+        margin-top: 20px;
+      }
+    </style>
   </head>
   <body>
     <h1>Coach Image Tester</h1>
@@ -25,7 +38,19 @@
         <h4 class="size"></h4>
         <h4 class="dimensions"></h4>
         <a class="url"></a>
-        <div class="data"></div>
+        <div class="data">
+          <details>
+            <summary>Details</summary>
+            <p class="staging"></p>
+            <p class="server"></p>
+            <p class="filename"></p>
+
+            <p class="og-format"></p>
+            <p class="og-size"></p>
+            <p class="og-width"></p>
+            <p class="result-width"></p>
+          </details>
+        </div>
         <div class="img-wrap"></div>
       </div>
       <hr />

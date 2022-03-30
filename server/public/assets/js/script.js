@@ -67,12 +67,7 @@ async function createAllImgs(presets) {
     const json = await response.json();
     console.log(json);
 
-    let fileImg = await fetch(img.src, {
-      "x-im-piez": "on",
-      "x-akamai-ro-piez": "on",
-      Pragma:
-        "akamai-x-cache-on, akamai-x-cache-remote-on, akamai-x-check-cacheable, akamai-x-get-cache-key, akamai-x-get-extracted-values, akamai-x-get-true-cache-key, akamai-x-serial-no, akamai-x-get-request-id, akamai-x-get-client-ip, x-akamai-cpi-trace, x-akamai-a2-trace,akamai-x-im-trace, akamai-x-feo-trace,akamai-x-tapioca-trace,x-akamai-a2-trace,akamai-x-ro-trace, akamai-x-get-brotli-status, akamai-x-im-trace",
-    });
+    let fileImg = await fetch(img.src);
 
     fileImg = await fileImg.blob();
 
@@ -80,23 +75,7 @@ async function createAllImgs(presets) {
     console.log(img.width, img.height);
 
     const clone = template.content.cloneNode(true);
-    const h2 = clone.querySelector("h2");
-
-    h2.textContent = preset || "No Preset";
-    const type = clone.querySelector(".type");
-    type.textContent = fileImg.type;
-    const size = clone.querySelector(".size");
-    size.textContent = `${(fileImg.size / Math.pow(1024, 1)).toFixed(2)} kb`;
-    const dimensions = clone.querySelector(".dimensions");
-    dimensions.textContent = `width: ${img.width} height: ${img.height}`;
-    const a = clone.querySelector("a");
-    a.href = url;
-    a.textContent = url;
-    const data = clone.querySelector(".data");
-    data.textContent = JSON.stringify(json, null, 2);
-    const div = clone.querySelector(".img-wrap");
-    div.appendChild(img);
-    document.querySelector("#root").appendChild(clone);
+    writeHTML(clone, fileImg, preset, img, json, url);
   }
 }
 
@@ -121,3 +100,44 @@ form.addEventListener("submit", async (e) => {
   //   `https://images.coach.com/is/image/Coach/${imgCode}`
   // );
 });
+
+function writeHTML(clone, fileImg, preset, img, json, url) {
+  const h2 = clone.querySelector("h2");
+
+  h2.textContent = preset || "No Preset";
+  const type = clone.querySelector(".type");
+  type.textContent = fileImg.type;
+  const size = clone.querySelector(".size");
+  size.textContent = `${(fileImg.size / Math.pow(1024, 1)).toFixed(2)} kb`;
+  const dimensions = clone.querySelector(".dimensions");
+  dimensions.textContent = `width: ${img.width} height: ${img.height}`;
+  const a = clone.querySelector("a");
+  a.href = url;
+  a.textContent = url;
+
+  // <p class="staging"></p>
+  // <p class="server"></p>
+  // <p class="filename"></p>
+
+  // <p class="og-format"></p>
+  // <p class="og-size"></p>
+  // <p class="og-width"></p>
+  // <p class="result-width"></p>
+  const staging = clone.querySelector(".staging");
+  staging.textContent = `Staging: ${json.staging}`;
+  const server = clone.querySelector(".server");
+  server.textContent = `Server: ${json.server}`;
+  const fileName = clone.querySelector(".filename");
+  fileName.textContent = `fileName: ${json.fileName}`;
+  const originalFormat = clone.querySelector(".og-format");
+  originalFormat.textContent = `originalFormat: ${json.originalFormat}`;
+  const originalSize = clone.querySelector(".og-size");
+  originalSize.textContent = `originalSize: ${json.originalSize}`;
+  const originalWidth = clone.querySelector(".og-width");
+  originalWidth.textContent = `originalWidth: ${json.originalWidth}`;
+  const resultWidth = clone.querySelector(".result-width");
+  resultWidth.textContent = `resultWidth: ${json.resultWidth}`;
+  const div = clone.querySelector(".img-wrap");
+  div.appendChild(img);
+  document.querySelector("#root").appendChild(clone);
+}
