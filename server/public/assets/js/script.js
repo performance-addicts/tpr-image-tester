@@ -53,12 +53,12 @@ async function createAllImgs(presets) {
     const url = `https://images.coach.com/is/image/Coach/${imgCode}${
       preset ? "?" + preset : ""
     }`;
-    img.src = url;
+
     const template = document.querySelector("#product");
     console.log(url);
     const response = await fetch("/api/url", {
       method: "POST",
-      body: JSON.stringify({ url: url }),
+      body: JSON.stringify({ url: url, ua: navigator.userAgent }),
       headers: {
         "Content-Type": "application/json",
       },
@@ -66,6 +66,7 @@ async function createAllImgs(presets) {
 
     const json = await response.json();
     console.log(json);
+    img.src = json.imgBody;
 
     let fileImg = await fetch(img.src);
 
@@ -124,19 +125,19 @@ function writeHTML(clone, fileImg, preset, img, json, url) {
   // <p class="og-width"></p>
   // <p class="result-width"></p>
   const staging = clone.querySelector(".staging");
-  staging.textContent = `Staging: ${json.staging}`;
+  staging.textContent = `Staging: ${json.data.staging}`;
   const server = clone.querySelector(".server");
-  server.textContent = `Server: ${json.server}`;
+  server.textContent = `Server: ${json.data.server}`;
   const fileName = clone.querySelector(".filename");
-  fileName.textContent = `fileName: ${json.fileName}`;
+  fileName.textContent = `fileName: ${json.data.fileName}`;
   const originalFormat = clone.querySelector(".og-format");
-  originalFormat.textContent = `originalFormat: ${json.originalFormat}`;
+  originalFormat.textContent = `originalFormat: ${json.data.originalFormat}`;
   const originalSize = clone.querySelector(".og-size");
-  originalSize.textContent = `originalSize: ${json.originalSize}`;
+  originalSize.textContent = `originalSize: ${json.data.originalSize}`;
   const originalWidth = clone.querySelector(".og-width");
-  originalWidth.textContent = `originalWidth: ${json.originalWidth}`;
+  originalWidth.textContent = `originalWidth: ${json.data.originalWidth}`;
   const resultWidth = clone.querySelector(".result-width");
-  resultWidth.textContent = `resultWidth: ${json.resultWidth}`;
+  resultWidth.textContent = `resultWidth: ${json.data.resultWidth}`;
   const div = clone.querySelector(".img-wrap");
   div.appendChild(img);
   document.querySelector("#root").appendChild(clone);

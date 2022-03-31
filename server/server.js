@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const app = express();
+const fs = require("fs");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -16,6 +17,7 @@ app.post("/api/url", async (req, res) => {
     headers: {
       "x-im-piez": "on",
       "x-akamai-ro-piez": "on",
+      "user-agent": req.body.ua,
     },
   });
   res.header({ "Access-Control-Expose-Headers": "*" });
@@ -31,6 +33,8 @@ app.post("/api/url", async (req, res) => {
   const contentLength = response.headers.get("content-length");
   const server = response.headers.get("server");
 
+  res.set({ fileName: fileName });
+
   const data = {
     staging,
     server,
@@ -44,7 +48,16 @@ app.post("/api/url", async (req, res) => {
     contentLength,
   };
 
-  res.json(data);
+  // let imgBody = `data:${response.headers.get("content-type")};base64,${(
+  //   await response.arrayBuffer()
+  // ).toString("base64")}`;
+  // // imgBody = JSON.stringify(imgBody);
+  // console.log(imgBody);
+  const data1 = await response.buffer();
+  const b64 = data1.toString("base64");
+  console.log(b64);
+  let imgBody = `data:${response.headers.get("content-type")};base64,${b64}`;
+  res.json({ data, imgBody });
 });
 
 app.listen(port, () => {
