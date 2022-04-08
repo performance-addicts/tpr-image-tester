@@ -1,4 +1,8 @@
-let imgCode = "cd527_b4bk_a0";
+let imgCode = "https://images.coach.com/is/image/Coach/c8529_b4ta7_a0";
+const coachDomain = "https://images.coach.com/is/image/Coach/";
+const swDomain =
+  "https://images.stuartweitzman.com/is/image/stuartweitzmanonline/";
+const ksDomain = "https://images.katespade.com/is/image/KateSpade/";
 
 const presets = [
   "$mobileThumbnail$",
@@ -29,9 +33,7 @@ async function postToServer(presets) {
   for (let i = 0; i < presets.length; i++) {
     const preset = presets[i];
 
-    const url = `https://images.coach.com/is/image/Coach/${imgCode}${
-      preset ? "?" + preset : ""
-    }`;
+    const url = `${imgCode}${preset ? "?" + preset : ""}`;
     const ua = navigator.userAgent;
     const response = await fetch("/.netlify/functions/images/images", {
       method: "POST",
@@ -94,14 +96,18 @@ const form = document.getElementById("url-check");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const value = document.getElementById("url").value.trim();
-  if (!value.includes("images.coach.com")) {
-    document.getElementById("url").value = "";
-    return alert("URL does not contain images.coach.com");
-  }
-  let split = value.substring(40).split("?");
 
-  imgCode = split[0];
+  const value = document.getElementById("url").value.trim();
+  if (
+    !value.includes(coachDomain) &&
+    !value.includes(swDomain) &&
+    !value.includes(ksDomain)
+  ) {
+    document.getElementById("url").value = "";
+    return alert("URL is not from a supported domain");
+  }
+
+  imgCode = value.split("?")[0];
   document.querySelector("#root").innerHTML = "";
   document.querySelector("#loading").textContent = "LOADING...";
   const data = await postToServer(presets)
@@ -188,3 +194,7 @@ function calcDiff(before, after) {
 
   return `${(decimal * 100).toFixed(2)}% increase`;
 }
+
+document.querySelectorAll("input[name='brand']").forEach((input) => {
+  input.addEventListener("change", myfunction);
+});
