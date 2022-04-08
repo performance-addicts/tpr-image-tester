@@ -58,10 +58,6 @@ function awaitJson(responses) {
   );
 }
 
-// postToServer(presets)
-//   .then(awaitJson)
-//   .then((response) => console.log("TEST", response));
-
 async function createAllImgs(responses) {
   for (const response of responses) {
     const img = new Image();
@@ -195,7 +191,3 @@ function calcDiff(before, after) {
 
   return `${(decimal * 100).toFixed(2)}% increase`;
 }
-
-document.querySelectorAll("input[name='brand']").forEach((input) => {
-  input.addEventListener("change", myfunction);
-});
