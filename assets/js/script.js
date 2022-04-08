@@ -155,7 +155,8 @@ function writeHTML(clone, preset, img, json, url) {
   console.log(json.originalSize - json.contentLength);
 
   console.log(calcDiff(json.originalSize, json.contentLength));
-
+  const ua = clone.querySelector(".user-agent");
+  ua.textContent = `User Agent: ${json.ua}`;
   const staging = clone.querySelector(".staging");
   staging.textContent = `Staging: ${json.staging}`;
   const server = clone.querySelector(".server");

@@ -42,6 +42,7 @@ const handler = async (event) => {
       encodingQuality,
       url: json.url,
       preset: json.preset,
+      ua: json.ua,
     };
 
     console.log(data);
