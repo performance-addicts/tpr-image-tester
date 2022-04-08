@@ -68,7 +68,17 @@ async function createAllImgs(responses) {
     const template = document.querySelector("#product");
 
     const clone = template.content.cloneNode(true);
-    writeHTML(clone, response.preset, img, response, response.url);
+    const poll = setInterval(function () {
+      if (img.naturalWidth) {
+        clearInterval(poll);
+        console.log(img.naturalWidth, img.naturalHeight);
+        writeHTML(clone, response.preset, img, response, response.url);
+      }
+    }, 10);
+
+    img.onload = function () {
+      console.log("Fully loaded");
+    };
   }
 }
 
@@ -77,7 +87,7 @@ async function createAllImgs(responses) {
     .then(awaitJson)
     .then((response) => response);
   await createAllImgs(data);
-  document.querySelector("#root h1").innerHTML = "<h1></h1>";
+  document.querySelector("#loading").textContent = "";
 })();
 
 const form = document.getElementById("url-check");
@@ -101,6 +111,7 @@ form.addEventListener("submit", async (e) => {
 });
 
 function writeHTML(clone, preset, img, json, url) {
+  console.log(img);
   const h2 = clone.querySelector("h2");
 
   h2.textContent = preset || "No Preset";
@@ -111,7 +122,7 @@ function writeHTML(clone, preset, img, json, url) {
     parseInt(json.contentLength) / Math.pow(1024, 1)
   ).toFixed(2)} kb`;
   const dimensions = clone.querySelector(".dimensions");
-  dimensions.textContent = `width: ${img.width} height: ${img.height}`;
+  dimensions.textContent = `width: ${img.naturalWidth} height: ${img.naturalHeight}`;
   const a = clone.querySelector("a");
   a.href = url;
   a.textContent = url;
