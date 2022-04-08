@@ -40,6 +40,8 @@ const handler = async (event) => {
       contentType,
       contentLength,
       encodingQuality,
+      url: json.url,
+      preset: json.preset,
     };
 
     console.log(data);
