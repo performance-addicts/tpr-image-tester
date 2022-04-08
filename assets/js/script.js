@@ -10,6 +10,8 @@ const presets = [
   "$desktopSwatchImage$",
   "$quickViewProduct$",
   "$imageRec$",
+  "$mobileCloserLook$",
+  "$desktopCloserLook$",
   "$mobileProductTile$",
   "$tabletProductTile$",
   "$desktopProductTile$",
@@ -22,33 +24,70 @@ const presets = [
   "",
 ];
 
-async function createAllImgs(presets) {
-  for (const preset of presets) {
-    const img = new Image();
+async function postToServer(presets) {
+  const responses = [];
+  for (let i = 0; i < presets.length; i++) {
+    const preset = presets[i];
+
     const url = `https://images.coach.com/is/image/Coach/${imgCode}${
       preset ? "?" + preset : ""
     }`;
-    img.src = url;
-    const template = document.querySelector("#product");
-    console.log(url);
     const ua = navigator.userAgent;
     const response = await fetch("/.netlify/functions/images/images", {
       method: "POST",
-      body: JSON.stringify({ url: url, ua: ua }),
+      body: JSON.stringify({ url: url, ua: ua, preset: preset }),
       headers: {
         "Content-Type": "application/json",
       },
     });
+    responses.push(response);
+  }
+  return Promise.all(responses);
+}
 
-    const json = await response.json();
+function awaitJson(responses) {
+  return Promise.all(
+    responses.map((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error(response.statusText);
+    })
+  );
+}
+
+// postToServer(presets)
+//   .then(awaitJson)
+//   .then((response) => console.log("TEST", response));
+
+async function createAllImgs(responses) {
+  for (const response of responses) {
+    const img = new Image();
+
+    img.src = response.url;
+    const template = document.querySelector("#product");
 
     const clone = template.content.cloneNode(true);
-    writeHTML(clone, preset, img, json, url);
+    const poll = setInterval(function () {
+      if (img.naturalWidth) {
+        clearInterval(poll);
+        console.log(img.naturalWidth, img.naturalHeight);
+        writeHTML(clone, response.preset, img, response, response.url);
+      }
+    }, 10);
+
+    img.onload = function () {
+      console.log("Fully loaded");
+    };
   }
 }
 
 (async () => {
-  await createAllImgs(presets);
+  const data = await postToServer(presets)
+    .then(awaitJson)
+    .then((response) => response);
+  await createAllImgs(data);
+  document.querySelector("#loading").textContent = "";
 })();
 
 const form = document.getElementById("url-check");
@@ -63,11 +102,16 @@ form.addEventListener("submit", async (e) => {
   let split = value.substring(40).split("?");
 
   imgCode = split[0];
-  document.getElementById("root").innerHTML = "";
-  await createAllImgs(presets);
+  document.querySelector("#root").innerHTML = "";
+  document.querySelector("#loading").textContent = "LOADING...";
+  const data = await postToServer(presets)
+    .then(awaitJson)
+    .then((response) => response);
+  await createAllImgs(data);
 });
 
 function writeHTML(clone, preset, img, json, url) {
+  console.log(img);
   const h2 = clone.querySelector("h2");
 
   h2.textContent = preset || "No Preset";
@@ -78,7 +122,7 @@ function writeHTML(clone, preset, img, json, url) {
     parseInt(json.contentLength) / Math.pow(1024, 1)
   ).toFixed(2)} kb`;
   const dimensions = clone.querySelector(".dimensions");
-  dimensions.textContent = `width: ${img.width} height: ${img.height}`;
+  dimensions.textContent = `width: ${img.naturalWidth} height: ${img.naturalHeight}`;
   const a = clone.querySelector("a");
   a.href = url;
   a.textContent = url;
@@ -125,6 +169,7 @@ function writeHTML(clone, preset, img, json, url) {
   const div = clone.querySelector(".img-wrap");
   div.appendChild(img);
   document.querySelector("#root").appendChild(clone);
+  document.querySelector("#loading").textContent = "";
 }
 
 function calcDiff(before, after) {
