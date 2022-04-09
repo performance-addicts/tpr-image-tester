@@ -78,6 +78,30 @@ function awaitJson(responses) {
     })
   );
 }
+
+function formatDataAndImg(response) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+
+    img.src = response.url;
+
+    const clone = $template.content.cloneNode(true);
+    width = "";
+    height = "";
+
+    const poll = setInterval(function () {
+      if (img.naturalWidth) {
+        clearInterval(poll);
+        width = img.naturalWidth;
+        height = img.naturalHeight;
+        const responseClone = { ...response, width, height };
+
+        writeHTML(clone, img, response);
+        resolve(responseClone);
+      }
+    }, 10);
+  });
+}
 /*
 responses = json array
 loop through json
@@ -86,26 +110,12 @@ set up template
 make sure img width is available before writing html
 */
 async function createAllImgs(responses) {
+  const csvData = [];
   for (const response of responses) {
-    const img = new Image();
-
-    img.src = response.url;
-
-    const clone = $template.content.cloneNode(true);
-    const poll = setInterval(function () {
-      if (img.naturalWidth) {
-        clearInterval(poll);
-
-        writeHTML(clone, img, response);
-      }
-    }, 10);
-
-    img.onload = function () {
-      console.log("Fully loaded");
-    };
+    const responsesWithImgData = await formatDataAndImg(response);
+    csvData.push(responsesWithImgData);
   }
-
-  createCSV(responses);
+  createCSV(csvData);
 }
 /*
 takes array of json responses
@@ -114,11 +124,14 @@ creates download link
 */
 
 function createCSV(responses) {
+  console.log(responses);
   const header = [
     "url",
     "preset",
     "contentType",
     "contentLength",
+    "width",
+    "height",
     "ua",
     "server",
     "encodingQuality",
@@ -133,12 +146,14 @@ function createCSV(responses) {
 
   const csvString = [
     header,
-    ...responses.map((response, index) => [
+    ...responses.map((response) => [
       response.url,
       response.preset,
       response.contentType,
       response.contentLength,
-      response.ua,
+      response.width,
+      response.height,
+      response.ua.split(",").join("_"),
       response.server,
       response.encodingQuality,
       response.staging,
@@ -151,7 +166,6 @@ function createCSV(responses) {
     ]),
   ]
     .map((e) => {
-      e[4] = e[4].split(",").join("_");
       return e.join(",");
     })
     .join("\n");
@@ -198,20 +212,7 @@ $form.addEventListener("submit", async (e) => {
   await createAllImgs(data);
 });
 
-// function formatObject(jsonData, imgData) {
-//   const dataObject = {
-//     ...jsonData,
-//     height: imgData.naturalHeight,
-//     width: imgData.naturalWidth,
-//   };
-//   return dataObject;
-// }
-
-// const csvArr = [];
-
 function writeHTML(clone, img, json) {
-  // const dataObject = formatObject(json, img);
-  // csvArr.push(dataObject);
   const h2 = clone.querySelector("h2");
 
   h2.textContent = json.preset || "No Preset";
@@ -278,9 +279,7 @@ function calcDiff(before, after) {
   after = parseInt(after);
   if (before > after) {
     const diff = before - after;
-    console.log(diff);
     const decimal = (diff / before).toFixed(4);
-    console.log(decimal);
     return `${(decimal * 100).toFixed(2)}% decrease`;
   }
 
