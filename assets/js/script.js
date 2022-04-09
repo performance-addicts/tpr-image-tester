@@ -96,8 +96,7 @@ function formatDataAndImg(response) {
         height = img.naturalHeight;
         const responseClone = { ...response, width, height };
 
-        writeHTML(clone, img, response);
-        resolve(responseClone);
+        resolve({ responseClone, clone, img, response });
       }
     }, 10);
   });
@@ -111,9 +110,13 @@ make sure img width is available before writing html
 */
 async function createAllImgs(responses) {
   const csvData = [];
-  for (const response of responses) {
-    const responsesWithImgData = await formatDataAndImg(response);
-    csvData.push(responsesWithImgData);
+  for (const jsonResponse of responses) {
+    const { responseClone, clone, img, response } = await formatDataAndImg(
+      jsonResponse
+    );
+
+    csvData.push(responseClone);
+    writeHTML(clone, img, response);
   }
   createCSV(csvData);
 }
@@ -124,7 +127,6 @@ creates download link
 */
 
 function createCSV(responses) {
-  console.log(responses);
   const header = [
     "url",
     "preset",
