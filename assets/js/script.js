@@ -38,6 +38,14 @@ const presets = [
   "",
 ];
 
+// first load
+(async () => {
+  const data = await postToServer(presets)
+    .then(awaitJson)
+    .then((response) => response);
+  await createAllImgs(data);
+  document.querySelector("#loading").textContent = "";
+})();
 /*
 presets = array of presets
 loop through presets and create img url
@@ -84,6 +92,7 @@ function formatDataAndImg(response) {
     const img = new Image();
 
     img.src = response.url;
+    img.loading = "lazy";
 
     const clone = $template.content.cloneNode(true);
     width = "";
@@ -172,8 +181,6 @@ function createCSV(responses) {
     })
     .join("\n");
 
-  $csv.innerHTML = "";
-
   const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvString);
   const link = document.createElement("a");
   link.textContent = "DOWNLOAD CSV";
@@ -181,38 +188,6 @@ function createCSV(responses) {
   link.setAttribute("download", `${imgCode}.csv`);
   $csv.appendChild(link);
 }
-
-// first load
-(async () => {
-  const data = await postToServer(presets)
-    .then(awaitJson)
-    .then((response) => response);
-  await createAllImgs(data);
-  document.querySelector("#loading").textContent = "";
-})();
-
-// form handler
-$form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const value = document.getElementById("url").value.trim();
-  if (
-    !value.includes(COACH_DOMAIN) &&
-    !value.includes(SW_DOMAIN) &&
-    !value.includes(KS_DOMAIN)
-  ) {
-    document.getElementById("url").value = "";
-    return alert("URL is not from a supported domain");
-  }
-
-  imgCode = value.split("?")[0];
-  $root.innerHTML = "";
-  $loading.textContent = "LOADING...";
-  const data = await postToServer(presets)
-    .then(awaitJson)
-    .then((response) => response);
-  await createAllImgs(data);
-});
 
 function writeHTML(clone, img, json) {
   const h2 = clone.querySelector("h2");
@@ -271,6 +246,7 @@ function writeHTML(clone, img, json) {
   const resultWidth = clone.querySelector(".result-width");
   resultWidth.textContent = `resultWidth: ${json.resultWidth}`;
   const div = clone.querySelector(".img-wrap");
+
   div.appendChild(img);
   $root.appendChild(clone);
   $loading.textContent = "";
@@ -290,3 +266,27 @@ function calcDiff(before, after) {
 
   return `${(decimal * 100).toFixed(2)}% increase`;
 }
+
+// form handler
+$form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const value = document.getElementById("url").value.trim();
+  if (
+    !value.includes(COACH_DOMAIN) &&
+    !value.includes(SW_DOMAIN) &&
+    !value.includes(KS_DOMAIN)
+  ) {
+    document.getElementById("url").value = "";
+    return alert("URL is not from a supported domain");
+  }
+
+  imgCode = value.split("?")[0];
+  $csv.innerHTML = "";
+  $root.innerHTML = "";
+  $loading.textContent = "LOADING...";
+  const data = await postToServer(presets)
+    .then(awaitJson)
+    .then((response) => response);
+  await createAllImgs(data);
+});

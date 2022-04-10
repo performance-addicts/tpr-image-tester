@@ -3,9 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Coach Product Image Tester</title>
+    <title>Tapestry Product Image Tester</title>
     <!-- <link rel="stylesheet" href="./assets/css/style.css" /> -->
     <style>
+      * {
+        box-sizing: border-box;
+        font-family: "Open Sans", sans-serif;
+      }
+      :root {
+        font-size: 16px;
+        margin: 2rem;
+      }
+
       .form-example {
         margin: 20px;
       }
@@ -21,49 +30,230 @@
         font-style: italic;
       }
 
-      .info {
-        margin: 30px 0;
+      #csv {
+        min-height: 1.2rem;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+      .container {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      .info,
+      .form-example,
+      .heading,
+      #loading {
+        text-align: center;
+      }
+
+      .button {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        display: inline-block;
+        border: 0.2em solid;
+        position: relative;
+        cursor: pointer;
+        overflow: hidden;
+        opacity: 0.6;
+        color: #000;
+      }
+
+      input {
+        border: 0.2em solid;
+        opacity: 0.6;
+        padding: 0.5em 2em;
+        margin-top: 20px;
+      }
+
+      label {
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .button__text {
+        display: block;
+        padding: 0.5em 2em;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+
+      .button__text:before {
+        content: attr(title);
+      }
+
+      .button__text--bis {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        transform: translateX(-1em);
+        opacity: 0;
+      }
+
+      .button__mask {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: black;
+        transform: translateX(-100%) rotate(45deg);
+        transition: all 0.3s;
+      }
+
+      .button:hover {
+        opacity: 1;
+      }
+
+      .button:hover .button__text {
+        -webkit-animation: fx-text 0.3s ease-out;
+        animation: fx-text 0.3s ease-out;
+      }
+
+      .button:hover .button__text--bis {
+        -webkit-animation: fx-text-bis 0.3s ease-out;
+        animation: fx-text-bis 0.3s ease-out;
+      }
+
+      .button:hover .button__mask {
+        -webkit-animation: fx-mask 0.3s ease-out;
+        animation: fx-mask 0.3s ease-out;
+      }
+
+      .button:active {
+        opacity: 1;
+        background: black;
+        color: inherit;
+      }
+
+      @-webkit-keyframes fx-mask {
+        0% {
+          transform: translateX(-100%) rotate(45deg);
+        }
+
+        100% {
+          transform: translateX(100%) rotate(45deg);
+        }
+      }
+
+      @keyframes fx-mask {
+        0% {
+          transform: translateX(-100%) rotate(45deg);
+        }
+
+        100% {
+          transform: translateX(100%) rotate(45deg);
+        }
+      }
+
+      @-webkit-keyframes fx-text {
+        0% {
+          transform: translateX(0);
+          opacity: 1;
+        }
+
+        100% {
+          transform: translateX(1em);
+          opacity: 0;
+        }
+      }
+
+      @keyframes fx-text {
+        0% {
+          transform: translateX(0);
+          opacity: 1;
+        }
+
+        100% {
+          transform: translateX(1em);
+          opacity: 0;
+        }
+      }
+
+      @-webkit-keyframes fx-text-bis {
+        0% {
+          transform: translateX(-1em);
+          opacity: 0;
+        }
+
+        100% {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fx-text-bis {
+        0% {
+          transform: translateX(-1em);
+          opacity: 0;
+        }
+
+        100% {
+          transform: translateX(0);
+          opacity: 1;
+        }
       }
     </style>
   </head>
   <body>
-    <h1>Tapestry Product Image Tester</h1>
-
-    <div class="info">
-      <p>
-        Insert any product image url from images.coach.com,
-        images.katespade.com, or images.stuartweitzman.com
-      </p>
-      <p class="example">
-        ex:
-        https://images.coach.com/is/image/Coach/c8529_b4ta7_a0?$desktopProductTile$
-      </p>
-      <p class="example">
-        ex:
-        https://images.stuartweitzman.com/is/image/stuartweitzmanonline/SA251_UCR_SOV_12?$desktopProductTile$
-      </p>
-      <p class="example">
-        ex:
-        https://images.katespade.com/is/image/KateSpade/KS2143PN_040?$desktopProductTile$
-      </p>
-      <small
-        >mobileSwatch, tabletSwatch, and desktopSwatch presets don't exist for
-        some products, they will be 1000 x 1000 if they do not.</small
-      >
+    <h1 class="heading">Tapestry Product Image Tester</h1>
+    <div class="container">
+      <div class="info">
+        <p>
+          Insert any product image url from images.coach.com,
+          images.katespade.com, or images.stuartweitzman.com
+        </p>
+        <p class="example">
+          ex:
+          https://images.coach.com/is/image/Coach/c8529_b4ta7_a0?$desktopProductTile$
+        </p>
+        <p class="example">
+          ex:
+          https://images.stuartweitzman.com/is/image/stuartweitzmanonline/SA251_UCR_SOV_12?$desktopProductTile$
+        </p>
+        <p class="example">
+          ex:
+          https://images.katespade.com/is/image/KateSpade/KS2143PN_040?$desktopProductTile$
+        </p>
+        <small
+          >mobileSwatch, tabletSwatch, and desktopSwatch presets don't exist for
+          some products, they will be 1000 x 1000 if they do not.</small
+        >
+      </div>
+      <form class="form-example" id="url-check">
+        <div class="form-example">
+          <div>
+            <label for="name">URL: </label>
+          </div>
+          <input
+            placeholder="Image URL"
+            type="url"
+            id="url"
+            size="80"
+            required
+          />
+        </div>
+        <div class="form-example">
+          <button type="submit" class="button">
+            <span class="button__mask"></span>
+            <span class="button__text">submit</span>
+            <span class="button__text button__text--bis">submit</span>
+          </button>
+        </div>
+      </form>
     </div>
-    <form class="form-example" id="url-check">
-      <div class="form-example">
-        <label for="name">URL: </label>
-        <input type="text" id="url" size="50" required />
-      </div>
-      <div class="form-example">
-        <input type="submit" value="Submit" />
-      </div>
-    </form>
     <div id="csv"></div>
-    <h1 id="loading">LOADING...</h1>
+    <h1 id="loading" class="sp sp-3balls">LOADING...</h1>
     <section id="root"></section>
-    <template id="product">
+    <template id="product" class="card">
       <div>
         <h2 class="'preset"></h2>
         <h4 class="type"></h4>
