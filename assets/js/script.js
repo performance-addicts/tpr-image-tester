@@ -92,7 +92,6 @@ function formatDataAndImg(response) {
     const img = new Image();
 
     img.src = response.url;
-    // img.loading = "lazy";
 
     const clone = $template.content.cloneNode(true);
     width = "";
@@ -103,6 +102,9 @@ function formatDataAndImg(response) {
         clearInterval(poll);
         width = img.naturalWidth;
         height = img.naturalHeight;
+        img.height = img.naturalHeight;
+        img.width = img.naturalWidth;
+
         const responseClone = { ...response, width, height };
 
         resolve({ responseClone, clone, img, response });
@@ -207,6 +209,7 @@ function writeHTML(clone, img, json) {
   dimensions.textContent = `width: ${img.naturalWidth} height: ${img.naturalHeight}`;
   const a = clone.querySelector("a");
   a.href = json.url;
+
   a.textContent = json.url;
   a.target = "_blank";
 
@@ -246,7 +249,7 @@ function writeHTML(clone, img, json) {
 
   div.appendChild(img);
   $root.appendChild(clone);
-  $loading.textContent = "";
+  $loading.classList.remove("loader");
 }
 
 function calcDiff(before, after) {
@@ -281,7 +284,7 @@ $form.addEventListener("submit", async (e) => {
   imgCode = value.split("?")[0];
   $csv.innerHTML = "";
   $root.innerHTML = "";
-  $loading.textContent = "LOADING...";
+  $loading.classList.add("loader");
   const data = await postToServer(presets)
     .then(awaitJson)
     .then((response) => response);
