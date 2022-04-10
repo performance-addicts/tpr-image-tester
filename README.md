@@ -20,6 +20,8 @@ Add any product image url from images.{brand}.com domain and get the following d
   - Original Image WIdth
   - Result Image Width
   - Pixel Density
+  - Cache Key
+  - Cache Status
 - Percentage difference in file size between original image and resulting Image Manager processed Image (offline optimization only)
 
 All this data is available to download as a CSV for each image request.

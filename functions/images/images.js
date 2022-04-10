@@ -10,6 +10,7 @@ const handler = async (event) => {
         "x-im-piez": "on",
         "x-akamai-ro-piez": "on",
         "user-agent": json.ua,
+        Pragma: "akamai-x-cache-on, akamai-x-get-cache-key",
       },
     });
 
@@ -27,6 +28,8 @@ const handler = async (event) => {
     const contentLength = response.headers.get("content-length");
     const server = response.headers.get("server");
     const encodingQuality = response.headers.get("x-im-encoding-quality");
+    const cacheKey = response.headers.get("x-cache-key");
+    const cacheStatus = response.headers.get("x-cache");
 
     const data = {
       staging,
@@ -43,9 +46,10 @@ const handler = async (event) => {
       url: json.url,
       preset: json.preset,
       ua: json.ua,
+      cacheKey,
+      cacheStatus,
     };
 
-   
     return {
       statusCode: 200,
       body: JSON.stringify(data),

@@ -153,6 +153,8 @@ function createCSV(responses) {
     "originalWidth",
     "resultWidth",
     "pixelDensity",
+    "cacheKey",
+    "cacheStatus",
   ];
 
   const csvString = [
@@ -168,12 +170,14 @@ function createCSV(responses) {
       response.server,
       response.encodingQuality,
       response.staging,
-      response.fileName,
+      response.fileName.split(",").join("_"),
       response.originalFormat,
       response.originalSize,
       response.originalWidth,
       response.resultWidth,
-      response.pixelDensity,
+      response.pixelDensity.split(",").join("_"),
+      response.cacheKey.split(",").join("_"),
+      response.cacheStatus.split(",").join("_"),
     ]),
   ]
     .map((e) => {
@@ -227,14 +231,15 @@ function writeHTML(clone, img, json) {
   const { preset, url, contentType, contentLength, ...detailsObject } = json;
 
   for (let [key, value] of Object.entries(detailsObject)) {
+    console.log(key, value);
     const selector = clone.querySelector(`.${key}`);
 
     const result = key.replace(/([A-Z])/g, " $1");
     const finalResult = key.charAt(0).toUpperCase() + result.slice(1);
-
-    selector.textContent = `${
+    const html = `<strong>${
       finalResult === "Ua" ? "User Agent" : finalResult
-    }: ${value}`;
+    }:</strong> ${value}`;
+    selector.innerHTML = html;
   }
 
   const div = clone.querySelector(".img-wrap");
