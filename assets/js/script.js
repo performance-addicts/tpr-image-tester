@@ -223,28 +223,20 @@ function writeHTML(clone, img, json) {
   // <p class="og-size"></p>
   // <p class="og-width"></p>
   // <p class="result-width"></p>
-  console.log(json.originalSize, json.contentLength);
-  console.log(json.originalSize - json.contentLength);
 
-  console.log(calcDiff(json.originalSize, json.contentLength));
-  const ua = clone.querySelector(".user-agent");
-  ua.textContent = `User Agent: ${json.ua}`;
-  const staging = clone.querySelector(".staging");
-  staging.textContent = `Staging: ${json.staging}`;
-  const server = clone.querySelector(".server");
-  server.textContent = `Server: ${json.server}`;
-  const fileName = clone.querySelector(".filename");
-  fileName.textContent = `fileName: ${json.fileName}`;
-  const encodingQuality = clone.querySelector(".encoding-quality");
-  encodingQuality.textContent = `encodingQuality: ${json.encodingQuality}`;
-  const originalFormat = clone.querySelector(".og-format");
-  originalFormat.textContent = `originalFormat: ${json.originalFormat}`;
-  const originalSize = clone.querySelector(".og-size");
-  originalSize.textContent = `originalSize: ${json.originalSize}`;
-  const originalWidth = clone.querySelector(".og-width");
-  originalWidth.textContent = `originalWidth: ${json.originalWidth}`;
-  const resultWidth = clone.querySelector(".result-width");
-  resultWidth.textContent = `resultWidth: ${json.resultWidth}`;
+  const { preset, url, contentType, contentLength, ...detailsObject } = json;
+
+  for (let [key, value] of Object.entries(detailsObject)) {
+    const selector = clone.querySelector(`.${key}`);
+
+    const result = key.replace(/([A-Z])/g, " $1");
+    const finalResult = key.charAt(0).toUpperCase() + result.slice(1);
+
+    selector.textContent = `${
+      finalResult === "Ua" ? "User Agent" : finalResult
+    }: ${value}`;
+  }
+
   const div = clone.querySelector(".img-wrap");
 
   div.appendChild(img);

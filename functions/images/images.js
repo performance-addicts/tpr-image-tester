@@ -45,7 +45,7 @@ const handler = async (event) => {
       ua: json.ua,
     };
 
-    console.log(data);
+   
     return {
       statusCode: 200,
       body: JSON.stringify(data),
