@@ -92,7 +92,7 @@ function formatDataAndImg(response) {
     const img = new Image();
 
     img.src = response.url;
-    img.loading = "lazy";
+    // img.loading = "lazy";
 
     const clone = $template.content.cloneNode(true);
     width = "";
