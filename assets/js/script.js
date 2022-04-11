@@ -118,8 +118,8 @@ function formatDataAndImg(response) {
         clearInterval(poll);
         width = img.naturalWidth;
         height = img.naturalHeight;
-        img.height = img.naturalHeight;
-        img.width = img.naturalWidth;
+        // img.height = img.naturalHeight;
+        // img.width = img.naturalWidth;
 
         const responseClone = { ...response, width, height };
 
