@@ -12,6 +12,7 @@ const $template = document.querySelector("#product");
 const $csv = document.querySelector("#csv");
 const $root = document.querySelector("#root");
 const $loading = document.querySelector("#loading");
+const $infoButton = document.querySelector(".info-button");
 
 // scene7 presets
 const presets = [
@@ -37,6 +38,21 @@ const presets = [
   "$desktopProductZoom$",
   "",
 ];
+
+$infoButton.addEventListener("click", triggerAlert);
+function triggerAlert() {
+  Swal.fire({
+    title: "INFO",
+    icon: "Info",
+    html: infoHTML,
+    showCloseButton: true,
+    customClass: {
+      confirmButton: "swal-alt-close",
+    },
+    focusConfirm: false,
+    confirmButtonText: "CLOSE",
+  });
+}
 
 // first load
 (async () => {
@@ -290,3 +306,84 @@ $form.addEventListener("submit", async (e) => {
     .then((response) => response);
   await createAllImgs(data);
 });
+
+const infoHTML = `
+<div class="container">
+  <div class="info">
+    <p>
+      Insert any product image url from images.coach.com, images.katespade.com,
+      or images.stuartweitzman.com
+    </p>
+    <p class="example">
+      ex:
+      https://images.coach.com/is/image/Coach/c8529_b4ta7_a0?$desktopProductTile$
+    </p>
+    <p class="example">
+      ex:
+      https://images.stuartweitzman.com/is/image/stuartweitzmanonline/SA251_UCR_SOV_12?$desktopProductTile$
+    </p>
+    <p class="example">
+      ex:
+      https://images.katespade.com/is/image/KateSpade/KS2143PN_040?$desktopProductTile$
+    </p>
+    <small
+      >mobileSwatch, tabletSwatch, and desktopSwatch presets don't exist for
+      some products, they will be 1000 x 1000 if they do not.</small
+    >
+
+    <div style="text-align: left !important">
+      <p>
+        Add any product image url from images.{brand}.com domain and get the
+        following details for every variant:
+      </p>
+      <ul>
+        <li>Image Preview</li>
+        <li>Content Type</li>
+        <li>File Size</li>
+        <li>Preview URL</li>
+        <li>Height and Width</li>
+        <li>
+          Akamai Image Manager Details
+          <ul>
+            <li>Requesting User Agent (from client browser)</li>
+            <li>
+              Staging Header
+              <ul>
+                <li>
+                  When viewing on your local machine the Image Preview and the
+                  width and height will match staging but all the other details
+                  will be production info. Running this app locally will always
+                  show correct info on staging.
+                </li>
+              </ul>
+            </li>
+            <li>
+              Server - Akamai Image Manager (offline optimization) or Akamai
+              Image Server (realtime optimization) The details below will not be
+              available if realtime optimization occurs.
+            </li>
+            <li>IM Filename</li>
+            <li>Encoding Quality</li>
+            <li>Original Image Format</li>
+            <li>Original Image Size</li>
+            <li>Original Image WIdth</li>
+            <li>Result Image Width</li>
+            <li>Pixel Density</li>
+            <li>Cache Key</li>
+            <li>Cache Status</li>
+          </ul>
+        </li>
+        <li>
+          Percentage difference in file size between original image and
+          resulting Image Manager processed Image (offline optimization only)
+        </li>
+      </ul>
+      <p>
+        All this data is available to download as a CSV for each image request.
+      </p>
+    </div>
+  </div>
+</div>
+
+
+`;
