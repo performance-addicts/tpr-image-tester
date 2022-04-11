@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tapestry Product Image Tester</title>
+    <link rel="stylesheet" href="./assets/css/reset.min.css" />
     <link rel="stylesheet" href="./assets/css/style.css" />
     <style>
       * {
@@ -31,15 +32,18 @@
       }
 
       #csv {
-        min-height: 1.2rem;
+        min-height: 28px;
         text-align: center;
         font-size: 1.2rem;
         font-weight: bold;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
       }
       .container {
         display: flex;
         justify-content: center;
         flex-direction: column;
+        margin-top: 20px;
       }
 
       .info,
@@ -201,60 +205,82 @@
           opacity: 1;
         }
       }
+
+      div.container {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+      }
+
+      .info-button {
+        width: fit-content;
+      }
+
+      .swal-alt-close {
+        color: black !important;
+        background-color: white !important;
+        font-weight: bold !important;
+      }
+
+      #heading {
+        margin-bottom: 20px;
+      }
+
+      .card-wrapper {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      @media screen and (max-width: 600px) {
+        .container-fluid {
+          width: 100%;
+          /* padding-right: var(--bs-gutter-x, 0.75rem);
+          padding-left: var(--bs-gutter-x, 0.75rem); */
+          margin-right: auto;
+          margin-left: auto;
+        }
+      }
     </style>
+    <link
+      rel="preload"
+      href="./assets/css/sa-dark.min.css"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript
+      ><link rel="stylesheet" href="./assets/css/sa-dark.min.css"
+    /></noscript>
   </head>
   <body>
     <h1 class="heading">Tapestry Product Image Tester</h1>
     <div class="container">
-      <div class="info">
-        <p>
-          Insert any product image url from images.coach.com,
-          images.katespade.com, or images.stuartweitzman.com
-        </p>
-        <p class="example">
-          ex:
-          https://images.coach.com/is/image/Coach/c8529_b4ta7_a0?$desktopProductTile$
-        </p>
-        <p class="example">
-          ex:
-          https://images.stuartweitzman.com/is/image/stuartweitzmanonline/SA251_UCR_SOV_12?$desktopProductTile$
-        </p>
-        <p class="example">
-          ex:
-          https://images.katespade.com/is/image/KateSpade/KS2143PN_040?$desktopProductTile$
-        </p>
-        <small
-          >mobileSwatch, tabletSwatch, and desktopSwatch presets don't exist for
-          some products, they will be 1000 x 1000 if they do not.</small
-        >
-      </div>
-      <form class="form-example" id="url-check">
-        <div class="form-example">
-          <div>
-            <label for="name">URL: </label>
-          </div>
-          <input
-            placeholder="Image URL"
-            type="url"
-            id="url"
-            size="80"
-            required
-          />
-        </div>
-        <div class="form-example">
-          <button type="submit" class="button">
-            <span class="button__mask"></span>
-            <span class="button__text">submit</span>
-            <span class="button__text button__text--bis">submit</span>
-          </button>
-        </div>
-      </form>
+      <button class="button info-button">
+        <span class="button__mask"></span>
+        <span class="button__text">HOW TO USE</span>
+        <span class="button__text button__text--bis">HOW TO USE</span>
+      </button>
     </div>
+    <form class="form-example" id="url-check">
+      <div class="form-example">
+        <div>
+          <label for="name">URL: </label>
+        </div>
+        <input placeholder="Image URL" type="url" id="url" size="80" required />
+      </div>
+      <div class="form-example">
+        <button class="button">
+          <span class="button__mask"></span>
+          <span class="button__text">submit</span>
+          <span class="button__text button__text--bis">submit</span>
+        </button>
+      </div>
+    </form>
+
     <div id="csv"></div>
     <div id="loading" class="loader"></div>
     <section id="root"></section>
     <template id="product" class="card">
-      <div>
+      <div class="card-wrapper">
         <h2 class="'preset"></h2>
         <h4 class="type"></h4>
         <h4 class="size"></h4>
@@ -283,6 +309,7 @@
       <hr />
       <br />
     </template>
+    <script src="./assets/js/sweetalert2.min.js"></script>
     <script src="./assets/js/script.js"></script>
   </body>
 </html>
