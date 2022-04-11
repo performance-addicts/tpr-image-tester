@@ -198,9 +198,7 @@ function createCSV(responses) {
       response.cacheStatus.split(",").join("_"),
     ]),
   ]
-    .map((e) => {
-      return e.join(",");
-    })
+    .map((e) => e.join(","))
     .join("\n");
 
   const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvString);
@@ -306,6 +304,22 @@ $form.addEventListener("submit", async (e) => {
     .then((response) => response);
   await createAllImgs(data);
 });
+
+$infoButton.addEventListener("click", triggerAlert);
+
+function triggerAlert() {
+  Swal.fire({
+    title: "INFO",
+    icon: "Info",
+    html: infoHTML,
+    showCloseButton: true,
+    customClass: {
+      confirmButton: "swal-alt-close",
+    },
+    focusConfirm: false,
+    confirmButtonText: "CLOSE",
+  });
+}
 
 const infoHTML = `
 <div class="container">
