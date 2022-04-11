@@ -32,10 +32,12 @@
       }
 
       #csv {
-        min-height: 1.2rem;
+        min-height: 28px;
         text-align: center;
         font-size: 1.2rem;
         font-weight: bold;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
       }
       .container {
         display: flex;
@@ -224,6 +226,11 @@
         margin-bottom: 20px;
       }
 
+      .card-wrapper {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+      }
+
       @media screen and (max-width: 600px) {
         .container-fluid {
           width: 100%;
@@ -273,7 +280,7 @@
     <div id="loading" class="loader"></div>
     <section id="root"></section>
     <template id="product" class="card">
-      <div>
+      <div class="card-wrapper">
         <h2 class="'preset"></h2>
         <h4 class="type"></h4>
         <h4 class="size"></h4>
