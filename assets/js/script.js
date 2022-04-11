@@ -314,6 +314,7 @@ const infoHTML = `
       Insert any product image url from images.coach.com, images.katespade.com,
       or images.stuartweitzman.com
     </p>
+    <br>
     <p class="example">
       ex:
       https://images.coach.com/is/image/Coach/c8529_b4ta7_a0?$desktopProductTile$
@@ -326,12 +327,14 @@ const infoHTML = `
       ex:
       https://images.katespade.com/is/image/KateSpade/KS2143PN_040?$desktopProductTile$
     </p>
+    <br>
     <small
       >mobileSwatch, tabletSwatch, and desktopSwatch presets don't exist for
       some products, they will be 1000 x 1000 if they do not.</small
     >
-
+  <br>
     <div style="text-align: left !important">
+    <br>
       <p>
         Add any product image url from images.{brand}.com domain and get the
         following details for every variant:

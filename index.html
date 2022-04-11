@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tapestry Product Image Tester</title>
+    <link rel="stylesheet" href="./assets/css/reset.min.css" />
     <link rel="stylesheet" href="./assets/css/style.css" />
     <style>
       * {
@@ -40,6 +41,7 @@
         display: flex;
         justify-content: center;
         flex-direction: column;
+        margin-top: 20px;
       }
 
       .info,
@@ -217,6 +219,20 @@
         background-color: white !important;
         font-weight: bold !important;
       }
+
+      #heading {
+        margin-bottom: 20px;
+      }
+
+      @media screen and (max-width: 600px) {
+        .container-fluid {
+          width: 100%;
+          /* padding-right: var(--bs-gutter-x, 0.75rem);
+          padding-left: var(--bs-gutter-x, 0.75rem); */
+          margin-right: auto;
+          margin-left: auto;
+        }
+      }
     </style>
     <link
       rel="preload"
@@ -231,7 +247,7 @@
   <body>
     <h1 class="heading">Tapestry Product Image Tester</h1>
     <div class="container">
-      <button type="submit" class="button info-button">
+      <button class="button info-button">
         <span class="button__mask"></span>
         <span class="button__text">HOW TO USE</span>
         <span class="button__text button__text--bis">HOW TO USE</span>
@@ -245,7 +261,7 @@
         <input placeholder="Image URL" type="url" id="url" size="80" required />
       </div>
       <div class="form-example">
-        <button type="submit" class="button">
+        <button class="button">
           <span class="button__mask"></span>
           <span class="button__text">submit</span>
           <span class="button__text button__text--bis">submit</span>
