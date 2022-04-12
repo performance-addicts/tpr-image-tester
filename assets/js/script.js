@@ -39,21 +39,6 @@ const presets = [
   "",
 ];
 
-$infoButton.addEventListener("click", triggerAlert);
-function triggerAlert() {
-  Swal.fire({
-    title: "INFO",
-    icon: "Info",
-    html: infoHTML,
-    showCloseButton: true,
-    customClass: {
-      confirmButton: "swal-alt-close",
-    },
-    focusConfirm: false,
-    confirmButtonText: "CLOSE",
-  });
-}
-
 // first load
 (async () => {
   const data = await postToServer(presets)
