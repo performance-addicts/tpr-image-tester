@@ -139,27 +139,6 @@ creates download link
 */
 
 function createCSV(responses) {
-  const header = [
-    "url",
-    "preset",
-    "contentType",
-    "contentLength",
-    "width",
-    "height",
-    "ua",
-    "server",
-    "encodingQuality",
-    "staging",
-    "fileName",
-    "originalFormat",
-    "originalSize",
-    "originalWidth",
-    "resultWidth",
-    "pixelDensity",
-    "cacheKey",
-    "cacheStatus",
-  ];
-
   function checkIfExists(prop) {
     console.log(prop);
 
@@ -177,27 +156,10 @@ function createCSV(responses) {
   }
 
   const csvString = [
-    header,
-    ...responses.map((response) => [
-      checkIfExists(response.url),
-      checkIfExists(response.preset),
-      checkIfExists(response.contentType),
-      checkIfExists(response.contentLength),
-      checkIfExists(response.width),
-      checkIfExists(response.height),
-      checkIfExists(response.ua),
-      checkIfExists(response.server),
-      checkIfExists(response.encodingQuality),
-      checkIfExists(response.staging),
-      checkIfExists(response.fileName),
-      checkIfExists(response.originalFormat),
-      checkIfExists(response.originalSize),
-      checkIfExists(response.resultWidth),
-      checkIfExists(response.pixelDensity),
-      checkIfExists(response.originalWidth),
-      checkIfExists(response.cacheKey),
-      checkIfExists(response.cacheStatus),
-    ]),
+    [...Object.keys(...responses)],
+    ...responses.map((response) =>
+      [...Object.values(response)].map((item) => checkIfExists(item))
+    ),
   ]
     .map((e) => e.join(","))
     .join("\n");
