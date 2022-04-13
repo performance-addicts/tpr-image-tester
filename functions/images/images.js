@@ -14,40 +14,23 @@ const handler = async (event) => {
       },
     });
 
-    console.log(...response.headers);
-    const ua = response.headers.get("user-agent");
-    console.log(ua);
-    const staging = response.headers.get("x-akamai-staging") || false;
-    const fileName = response.headers.get("x-im-file-name");
-    const originalFormat = response.headers.get("x-im-original-format");
-    const originalSize = response.headers.get("x-im-original-size");
-    const originalWidth = response.headers.get("x-im-original-width");
-    const resultWidth = response.headers.get("x-im-result-width");
-    const pixelDensity = response.headers.get("x-im-pixel-density");
-    const contentType = response.headers.get("content-type");
-    const contentLength = response.headers.get("content-length");
-    const server = response.headers.get("server");
-    const encodingQuality = response.headers.get("x-im-encoding-quality");
-    const cacheKey = response.headers.get("x-cache-key");
-    const cacheStatus = response.headers.get("x-cache");
-
     const data = {
-      staging,
-      server,
-      fileName,
-      originalFormat,
-      originalSize,
-      originalWidth,
-      resultWidth,
-      pixelDensity,
-      contentType,
-      contentLength,
-      encodingQuality,
       url: json.url,
       preset: json.preset,
+      contentType: response.headers.get("content-type"),
+      contentLength: response.headers.get("content-length"),
       ua: json.ua,
-      cacheKey,
-      cacheStatus,
+      server: response.headers.get("server"),
+      encodingQuality: response.headers.get("x-im-encoding-quality"),
+      staging: response.headers.get("x-akamai-staging") || false,
+      fileName: (fileName = response.headers.get("x-im-file-name")),
+      originalFormat: response.headers.get("x-im-original-format"),
+      originalSize: response.headers.get("x-im-original-size"),
+      originalWidth: response.headers.get("x-im-original-width"),
+      resultWidth: response.headers.get("x-im-result-width"),
+      pixelDensity: response.headers.get("x-im-pixel-density"),
+      cacheKey: response.headers.get("x-cache-key"),
+      cacheStatus: response.headers.get("x-cache"),
     };
 
     return {
