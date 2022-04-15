@@ -306,7 +306,7 @@ div.container {
     margin-left: auto;
   }
 
-  #url {
+  #url, #url-check {
     width: 100%;
   }
 }
