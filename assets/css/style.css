@@ -77,7 +77,7 @@
 }
 
 .form-example {
-  margin: 20px;
+  margin: 20px 0;
 }
 
 img {
@@ -304,5 +304,9 @@ div.container {
           padding-left: var(--bs-gutter-x, 0.75rem); */
     margin-right: auto;
     margin-left: auto;
+  }
+
+  #url {
+    width: 100%;
   }
 }
