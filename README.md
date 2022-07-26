@@ -11,7 +11,6 @@ Add any product image url from images.{brand}.com domain and get the following d
 - Akamai Image Manager Details
   - Requesting User Agent (from client browser)
   - Staging Header
-    - When viewing on your local machine the Image Preview and the width and height will match staging but  all the other details will be production info. Running this app locally will always show correct info on staging.
   - Server - Akamai Image Manager (offline optimization) or Akamai Image Server (realtime optimization) The details below will not be available if realtime optimization occurs.
   - IM Filename
   - Encoding Quality
