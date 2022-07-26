@@ -22,9 +22,6 @@ const presets = [
   "$mobileThumbnail$",
   "$tabletThumbnail$",
   "$desktopThumbnail$",
-  "$mobileSwatch$",
-  "$tabletSwatch$",
-  "$desktopSwatch$",
   "$desktopSwatchImage$",
   "$quickViewProduct$",
   "$imageRec$",
@@ -39,6 +36,9 @@ const presets = [
   "$mobileProductZoom$",
   "$tabletProductZoom$",
   "$desktopProductZoom$",
+  // "$mobileSwatch$",
+  // "$tabletSwatch$",
+  // "$desktopSwatch$",
   "",
 ];
 
@@ -214,6 +214,9 @@ function writeHTML(clone, img, json) {
   const { preset, url, contentType, contentLength, ...detailsObject } = json;
 
   for (let [key, value] of Object.entries(detailsObject)) {
+    if (!value) {
+      return;
+    }
     console.log(key, value);
     const selector = clone.querySelector(`.${key}`);
 
