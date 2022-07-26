@@ -214,9 +214,6 @@ function writeHTML(clone, img, json) {
   const { preset, url, contentType, contentLength, ...detailsObject } = json;
 
   for (let [key, value] of Object.entries(detailsObject)) {
-    if (!value) {
-      return;
-    }
     console.log(key, value);
     const selector = clone.querySelector(`.${key}`);
 
